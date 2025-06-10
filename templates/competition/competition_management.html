@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Competition Management</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-br from-yellow-100 to-yellow-300 min-h-screen p-10">
+<h1 class="text-3xl font-bold text-center text-yellow-900 mb-6">Competition Management</h1>
+
+<!-- Table displaying competitions -->
+<table class="table-auto w-full bg-white rounded shadow mb-6">
+    <thead class="bg-yellow-200 text-yellow-900">
+    <tr>
+        <th class="px-4 py-2">ID</th>
+        <th class="px-4 py-2">Name</th>
+        <th class="px-4 py-2">Date</th>
+        <th class="px-4 py-2">Sport</th>
+        <th class="px-4 py-2">Location</th>
+        <th class="px-4 py-2">Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for comp in competitions %}
+    <tr class="text-center border-t">
+        <td class="px-4 py-2">{{ comp.id }}</td>
+        <td class="px-4 py-2">{{ comp.name }}</td>
+        <td class="px-4 py-2">{{ comp.date }}</td>
+        <td class="px-4 py-2">{{ comp.sport }}</td>
+        <td class="px-4 py-2">{{ comp.location }}</td>
+        <td class="px-4 py-2">
+            <a href="/edit_competition/{{ comp.id }}" class="text-blue-600 hover:underline">Edit</a> |
+            <a href="/delete_competition/{{ comp.id }}" class="text-red-600 hover:underline">Delete</a>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<!-- Button to create new competition -->
+<div class="text-center">
+    <a href="/add_competition" class="bg-green-500 hover:bg-green-600 text-white font-bold py-2 px-4 rounded">
+        Add New Competition
+    </a>
+</div>
+</body>
+</html>

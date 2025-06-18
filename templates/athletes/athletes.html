@@ -12,6 +12,7 @@
     </style>
 </head>
 <body>
+    <a href="{{ url_for('main_menu') }}"><button>Back to Menu</button></a>
     <h1>Athletes List</h1>
     <a href="/athletes/add"><button>Add New Athlete</button></a>
     <table>
@@ -54,7 +55,6 @@
             {% endfor %}
         </tbody>
     </table>
-
     <br>
 </body>
 </html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Advanced Operations</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gradient-to-r from-blue-100 to-blue-200 text-gray-800 min-h-screen p-6">
+    <div class="container mx-auto">
+        <h1 class="text-4xl text-blue-900 font-bold text-center mb-10">Advanced Operations</h1>
+        <a href="/" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mb-6 inline-block">Back to Main</a>
+
+        <!-- Queries Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">Queries</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Query 1: Athletes born after 2000 -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-2">Athletes Born After 2000 with Medals</h3>
+                    <button onclick="runQuery1()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Run Query
+                    </button>
+                    <div id="query1-result" class="mt-4"></div>
+                </div>
+                <!-- Query 2: Sports with Competitions and Medals -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-2">Sports Statistics</h3>
+                    <button onclick="runQuery2()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Run Query
+                    </button>
+                    <div id="query2-result" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Functions Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">Functions</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Function 1: Top Athletes by Country -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-2">Top Athletes by Country</h3>
+                    <input id="country-id" type="number" placeholder="Enter Country ID" class="border p-2 rounded w-full mb-2">
+                    <button onclick="runFunction1()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Run Function
+                    </button>
+                    <div id="function1-result" class="mt-4"></div>
+                </div>
+                <!-- Function 2: Average Team Score -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-2">Average Team Score</h3>
+                    <input id="team-id" type="number" placeholder="Enter Team ID" class="border p-2 rounded w-full mb-2">
+                    <button onclick="runFunction2()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Run Function
+                    </button>
+                    <div id="function2-result" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Procedures Section -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-semibold text-blue-800 mb-4">Procedures</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Procedure 1: Assign Random Referees -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-2">Assign Random Referees</h3>
+                    <button onclick="runProcedure1()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Run Procedure
+                    </button>
+                    <div id="procedure1-result" class="mt-4"></div>
+                </div>
+                <!-- Procedure 2: Update Medal Count by Country -->
+                <div class="bg-white p-6 rounded-lg shadow-md">
+                    <h3 class="text-xl font-medium mb-2">Update Medal Count by Country</h3>
+                    <button onclick="runProcedure2()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                        Run Procedure
+                    </button>
+                    <div id="procedure2-result" class="mt-4"></div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <script>
+        async function runQuery1() {
+            try {
+                const response = await fetch('/advanced-operations/api/query1');
+                const data = await response.json();
+                let html = '<table class="w-full border-collapse border"><tr><th class="border p-2">Name</th><th class="border p-2">Gender</th><th class="border p-2">Country</th><th class="border p-2">Age</th><th class="border p-2">Best Medal</th></tr>';
+                data.forEach(row => {
+                    html += `<tr><td class="border p-2">${row.AthleteName}</td><td class="border p-2">${row.Gender}</td><td class="border p-2">${row.CountryName}</td><td class="border p-2">${row.Age}</td><td class="border p-2">${row.BestMedal}</td></tr>`;
+                });
+                html += '</table>';
+                document.getElementById('query1-result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('query1-result').innerHTML = '<p class="text-red-500">Error fetching data: ' + error.message + '</p>';
+            }
+        }
+
+        async function runQuery2() {
+            try {
+                const response = await fetch('/advanced-operations/api/query2');
+                const data = await response.json();
+                let html = '<table class="w-full border-collapse border"><tr><th class="border p-2">Sport</th><th class="border p-2">Competitions</th><th class="border p-2">Venues</th><th class="border p-2">Medals</th><th class="border p-2">Earliest Date</th></tr>';
+                data.forEach(row => {
+                    html += `<tr><td class="border p-2">${row.SportName}</td><td class="border p-2">${row.NumCompetitions}</td><td class="border p-2">${row.NumVenues}</td><td class="border p-2">${row.NumMedals}</td><td class="border p-2">${row.EarliestCompetitionDate}</td></tr>`;
+                });
+                html += '</table>';
+                document.getElementById('query2-result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('query2-result').innerHTML = '<p class="text-red-500">Error fetching data: ' + error.message + '</p>';
+            }
+        }
+
+        async function runFunction1() {
+            const countryId = document.getElementById('country-id').value;
+            if (!countryId) {
+                document.getElementById('function1-result').innerHTML = '<p class="text-red-500">Please enter a Country ID</p>';
+                return;
+            }
+            try {
+                const response = await fetch(`/advanced-operations/api/function1?countryId=${countryId}`);
+                const data = await response.json();
+                let html = '<table class="w-full border-collapse border"><tr><th class="border p-2">Athlete Name</th><th class="border p-2">Total Medals</th></tr>';
+                data.forEach(row => {
+                    html += `<tr><td class="border p-2">${row.athletename}</td><td class="border p-2">${row.total_medals}</td></tr>`;
+                });
+                html += '</table>';
+                document.getElementById('function1-result').innerHTML = html;
+            } catch (error) {
+                document.getElementById('function1-result').innerHTML = '<p class="text-red-500">Error fetching data: ' + error.message + '</p>';
+            }
+        }
+
+        async function runFunction2() {
+            const teamId = document.getElementById('team-id').value;
+            if (!teamId) {
+                document.getElementById('function2-result').innerHTML = '<p class="text-red-500">Please enter a Team ID</p>';
+                return;
+            }
+            try {
+                const response = await fetch(`/advanced-operations/api/function2?teamId=${teamId}`);
+                const data = await response.json();
+                document.getElementById('function2-result').innerHTML = `<p class="text-green-600">Average Team Score: ${data.avg_score}</p>`;
+            } catch (error) {
+                document.getElementById('function2-result').innerHTML = '<p class="text-red-500">Error fetching data: ' + error.message + '</p>';
+            }
+        }
+
+        async function runProcedure1() {
+            try {
+                const response = await fetch('/advanced-operations/api/procedure1', { method: 'POST' });
+                const data = await response.json();
+                document.getElementById('procedure1-result').innerHTML = `<p class="text-green-600">${data.message}</p>`;
+            } catch (error) {
+                document.getElementById('procedure1-result').innerHTML = '<p class="text-red-500">Error executing procedure: ' + error.message + '</p>';
+            }
+        }
+
+        async function runProcedure2() {
+            try {
+                const response = await fetch('/advanced-operations/api/procedure2', { method: 'POST' });
+                const data = await response.json();
+                document.getElementById('procedure2-result').innerHTML = `<p class="text-green-600">${data.message}</p>`;
+            } catch (error) {
+                document.getElementById('procedure2-result').innerHTML = '<p class="text-red-500">Error executing procedure: ' + error.message + '</p>';
+            }
+        }
+    </script>
+</body>
+</html>

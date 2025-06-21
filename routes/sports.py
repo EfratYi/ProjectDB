@@ -1,78 +1,117 @@
 from flask import Blueprint, request, render_template, redirect
 from db import get_connection
 
-sports_bp = Blueprint('sports', __name__, url_prefix='/sports')
+sports_bp = Blueprint('sports_bp', __name__, url_prefix='/sports')
 
 @sports_bp.route("/")
-def sports():
+def list_sports():
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("SELECT id, name FROM sports ORDER BY id")
-        sports_data = cur.fetchall()
+        cur.execute("""
+            SELECT sportid, sportname, category FROM sport ORDER BY sportid;
+        """)
+
+        rows = cur.fetchall()
         cur.close()
         conn.close()
 
-        sports = [{"id": row[0], "name": row[1]} for row in sports_data]
-        return render_template("sports/sports.html", sports=sports)
+        sports = [
+            {"id": row[0], "name": row[1], "category": row[2]} for row in rows
+        ]
+
+        return render_template("sport/sports.html", sports=sports)
+
     except Exception as e:
-        return f"Error fetching sports: {e}"
+        return f"שגיאה בשליפת ספורטים: {e}"
+
 
 @sports_bp.route("/add", methods=["GET", "POST"])
 def add_sport():
     if request.method == "POST":
-        name = request.form["name"]
-
         try:
+            name = request.form["sportname"]
+            category = request.form["category"]
+
             conn = get_connection()
             cur = conn.cursor()
-            cur.execute("INSERT INTO sports (name) VALUES (%s)", (name,))
+            cur.execute("""
+                INSERT INTO sport (sportname, category) VALUES (%s, %s)
+            """, (name, category))
             conn.commit()
             cur.close()
             conn.close()
+
             return redirect("/sports")
+
         except Exception as e:
-            return f"Error adding sport: {e}"
-    return render_template("sports/add_sport.html")
+            # במקרה של שגיאה - טען את הטופס מחדש עם הודעת שגיאה
+            return render_template("sport/add_sport.html", error=str(e),
+                                   sportname=name,
+                                   category=category)
+
+    # GET - טען טופס ריק
+    return render_template("sport/add_sport.html")
+
 
 @sports_bp.route("/edit/<int:sport_id>", methods=["GET", "POST"])
 def edit_sport(sport_id):
     if request.method == "POST":
-        name = request.form["name"]
         try:
+            name = request.form["sportname"]
+            category = request.form["category"]
+
             conn = get_connection()
             cur = conn.cursor()
-            cur.execute("UPDATE sports SET name = %s WHERE id = %s", (name, sport_id))
+            cur.execute("""
+                UPDATE sport SET sportname = %s, category = %s WHERE sportid = %s
+            """, (name, category, sport_id))
             conn.commit()
             cur.close()
             conn.close()
-            return redirect("/sports")
+
+            return redirect("/sport")
+
         except Exception as e:
-            return f"Error updating sport: {e}"
-    else:
-        try:
-            conn = get_connection()
-            cur = conn.cursor()
-            cur.execute("SELECT id, name FROM sports WHERE id = %s", (sport_id,))
-            sport = cur.fetchone()
-            cur.close()
-            conn.close()
-            if sport:
-                return render_template("sports/edit_sport.html", sport={"id": sport[0], "name": sport[1]})
-            else:
-                return "Sport not found"
-        except Exception as e:
-            return f"Error fetching sport: {e}"
+            return render_edit_sport_form(sport_id, str(e))
+
+    return render_edit_sport_form(sport_id)
+
+
+def render_edit_sport_form(sport_id, error=None):
+    try:
+        conn = get_connection()
+        cur = conn.cursor()
+        cur.execute("SELECT sportname, category FROM sport WHERE sportid = %s", (sport_id,))
+        row = cur.fetchone()
+        cur.close()
+        conn.close()
+
+        if not row:
+            return "ספורט לא נמצא"
+
+        sport = {
+            "name": row[0],
+            "category": row[1]
+        }
+
+        return render_template("sport/edit_sport.html", sport_id=sport_id, sport=sport, error=error)
+
+    except Exception as e:
+        return f"שגיאה בעריכת ספורט: {e}"
+
 
 @sports_bp.route("/delete/<int:sport_id>", methods=["POST"])
 def delete_sport(sport_id):
     try:
         conn = get_connection()
         cur = conn.cursor()
-        cur.execute("DELETE FROM sports WHERE id = %s", (sport_id,))
+        cur.execute("DELETE FROM sport WHERE sportid = %s", (sport_id,))
         conn.commit()
         cur.close()
         conn.close()
+
         return redirect("/sports")
+
     except Exception as e:
-        return f"Error deleting sport: {e}"
+        return f"שגיאה במחיקת ספורט: {e}"

@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sports List</title>
+    <style>
+        body { font-family: Arial, sans-serif; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        th { background-color: #f2f2f2; }
+        a, button { text-decoration: none; padding: 6px 12px; margin: 2px; }
+    </style>
+</head>
+<body>
+    <a href="{{ url_for('main_menu') }}"><button>Back to Menu</button></a>
+    <h1>Sports List</h1>
+    <a href="{{ url_for('sports_bp.add_sport') }}"><button>Add New Sport</button></a>
+    <table>
+        <thead>
+            <tr>
+                <th>Sport ID</th>
+                <th>Sport Name</th>
+                <th>Category</th>
+                <th>Edit</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sport in sports %}
+            <tr>
+                <td>{{ sport.id }}</td>
+                <td>{{ sport.name }}</td>
+                <td>{{ sport.category }}</td>
+                <td><a href="{{ url_for('sports_bp.edit_sport', sport_id=sport.id) }}">Edit</a></td>
+                <td>
+                    <form method="POST" action="{{ url_for('sports_bp.delete_sport', sport_id=sport.id) }}" onsubmit="return confirm('Are you sure you want to delete this sport?');">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

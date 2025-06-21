@@ -2,9 +2,9 @@ import psycopg2
 
 DB_HOST = 'localhost'
 DB_PORT = '5432'
-DB_NAME = 'Integrationdatabase'
+DB_NAME = 'IntegrationDataBase'
 DB_USER = 'efrat'
-DB_PASSWORD = 'efrat123'
+DB_PASSWORD = 'efrat1234567'
 
 def get_connection():
     return psycopg2.connect(

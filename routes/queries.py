@@ -13,5 +13,5 @@ def run_queries():
     cur.close()
     conn.close()
 
-    return render_template("queries.html", results=athletes)
+    return render_template("advanced-operations.html", results=athletes)
 """

@@ -1,31 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Main Screen</title>
     <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body class="bg-gradient-to-r from-blue-100 to-blue-200 text-center pt-20 min-h-screen">
-    <h1 class="text-4xl text-blue-900 font-bold mb-10">Olympics Management System</h1>
-    <ul>
-        <li class="mb-4">
-            <a href="/athletes" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Athlete Management
-            </a>
-        </li>
-        <li class="mb-4">
-            <a href="/sports" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Sport Management
-            </a>
-        </li>
-        <li class="mb-4">
-            <a href="/competitions" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Competition Management
-            </a>
-        </li>
+<body class="bg-gradient-to-br from-blue-100 via-white to-blue-200 min-h-screen flex items-center justify-center p-6">
 
-        <li class="mb-4">
-            <a href="/advanced-operations" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
-                Advanced Operations
+    <div class="bg-white shadow-lg rounded-2xl p-10 w-full max-w-xl text-center">
+        <h1 class="text-4xl font-extrabold text-blue-800 mb-10">Olympics Management System</h1>
+
+        <div class="grid gap-5">
+            <a href="/athletes" class="block bg-blue-500 hover:bg-blue-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow">
+                🏃 Athlete Management
             </a>
-        </li>
-    </ul>
+            <a href="/sports" class="block bg-green-500 hover:bg-green-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow">
+                🏅 Sport Management
+            </a>
+            <a href="/competitions" class="block bg-purple-500 hover:bg-purple-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow">
+                🥇 Competition Management
+            </a>
+            <a href="/advanced-operations" class="block bg-orange-500 hover:bg-orange-600 text-white font-semibold py-3 px-6 rounded-lg transition duration-300 shadow">
+                ⚙️ Advanced Operations
+            </a>
+        </div>
+    </div>
+
 </body>
+</html>

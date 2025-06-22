@@ -3,16 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Edit Athlete</title>
-    <style>
-        body { font-family: Arial, sans-serif; }
-        form { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; }
-        label { display: block; margin-bottom: 10px; }
-        input[type="text"], input[type="number"], input[type="date"], select {
-            width: 100%; padding: 8px; margin-top: 4px;
-        }
-        button { margin-top: 10px; }
-        .player-fields { display: none; }
-    </style>
+    <script src="https://cdn.tailwindcss.com"></script>
     <script>
         function togglePlayerFields() {
             const isPlayer = document.getElementById('isplayer').checked;
@@ -21,95 +12,92 @@
                 field.style.display = isPlayer ? 'block' : 'none';
             });
         }
-     async function fetchTakenJerseyNumbers() {
-        const teamSelect = document.getElementById('teamid');
-        const teamId = teamSelect.value;
-        const takenNumbersDiv = document.getElementById('taken-numbers');
 
-        if (teamId) {
-            try {
-                const response = await fetch(`/athletes/taken_numbers/${teamId}`);
-                const data = await response.json();
-                if (data.length > 0) {
-                    takenNumbersDiv.innerText = "Taken jersey numbers for this team: " + data.join(", ");
-                } else {
-                    takenNumbersDiv.innerText = "";
+        async function fetchTakenJerseyNumbers() {
+            const teamId = document.getElementById('teamid').value;
+            const takenNumbersDiv = document.getElementById('taken-numbers');
+
+            if (teamId) {
+                try {
+                    const response = await fetch(`/athletes/taken_numbers/${teamId}`);
+                    const data = await response.json();
+                    takenNumbersDiv.innerText = data.length > 0
+                        ? "Taken jersey numbers: " + data.join(", ")
+                        : "";
+                } catch {
+                    takenNumbersDiv.innerText = "Error fetching jersey numbers";
                 }
-            } catch (err) {
-                takenNumbersDiv.innerText = "Error fetching jersey numbers";
+            } else {
+                takenNumbersDiv.innerText = "";
             }
-        } else {
-            takenNumbersDiv.innerText = "";
         }
-    }
-     window.addEventListener('DOMContentLoaded', () => {
-    togglePlayerFields(); // הצגת שדות בהתאם ל־checkbox
-    document.getElementById('isplayer').addEventListener('change', togglePlayerFields);
 
-    // הוספת מאזינים לשינויים בקבוצה ומספר החולצה
-    document.getElementById('teamid').addEventListener('change', fetchTakenJerseyNumbers);
-    document.getElementById('athletejerseynum').addEventListener('input', fetchTakenJerseyNumbers);
-});
-
+        window.addEventListener('DOMContentLoaded', () => {
+            togglePlayerFields();
+            document.getElementById('isplayer').addEventListener('change', togglePlayerFields);
+            document.getElementById('teamid').addEventListener('change', fetchTakenJerseyNumbers);
+            document.getElementById('athletejerseynum').addEventListener('input', fetchTakenJerseyNumbers);
+        });
     </script>
 </head>
-<body>
-    <h1 style="text-align:center;">Edit Athlete</h1>
+<body class="bg-blue-50 min-h-screen flex items-center justify-center p-6">
+    <form method="POST" class="bg-white p-8 rounded shadow-md w-full max-w-md">
+        <h2 class="text-2xl font-bold text-blue-800 mb-6 text-center">Edit Athlete</h2>
 
-    <form method="POST">
-        <label>Name:
-            <input type="text" name="athletename" value="{{ athlete.name }}" required>
-        </label>
-        <label>Gender:
-            <input type="text" name="gender" value="{{ athlete.gender }}" required>
-        </label>
-        <label>Birthday:
-            <input type="date" name="birthday" value="{{ athlete.birthday }}" required>
-        </label>
+        <label class="block mb-2 text-blue-700 font-semibold">Name:</label>
+        <input type="text" name="athletename" value="{{ athlete.name }}" required class="w-full px-3 py-2 mb-4 border rounded" />
 
-        <label>Country:
-            <select name="countryid" required>
-                {% for id, name in countries %}
-                    <option value="{{ id }}" {% if athlete.countryid == id %}selected{% endif %}>{{ name }}</option>
-                {% endfor %}
-            </select>
-        </label>
+        <label class="block mb-2 text-blue-700 font-semibold">Gender:</label>
+        <input type="text" name="gender" value="{{ athlete.gender }}" required class="w-full px-3 py-2 mb-4 border rounded" />
+
+        <label class="block mb-2 text-blue-700 font-semibold">Birthday:</label>
+        <input type="date" name="birthday" value="{{ athlete.birthday }}" required class="w-full px-3 py-2 mb-4 border rounded" />
+
+        <label class="block mb-2 text-blue-700 font-semibold">Country:</label>
+        <select name="countryid" required class="w-full px-3 py-2 mb-4 border rounded">
+            {% for id, name in countries %}
+                <option value="{{ id }}" {% if athlete.countryid == id %}selected{% endif %}>{{ name }}</option>
+            {% endfor %}
+        </select>
+
         {% if athlete.height %}
-        <label>Height:
-         <input type="number" step="0.01" name="athleteheight" value="{{ athlete.height }}">
-        </label>
+        <label class="block mb-2 text-blue-700 font-semibold">Height:</label>
+        <input type="number" step="0.01" name="athleteheight" value="{{ athlete.height }}" class="w-full px-3 py-2 mb-4 border rounded" />
         {% endif %}
 
-        <label>Is Player:
-            <input type="checkbox" id="isplayer" name="isplayer" {% if athlete.is_player %}checked{% endif %}>
+        <label class="block mb-2 text-blue-700 font-semibold">
+            <input type="checkbox" id="isplayer" name="isplayer" {% if athlete.is_player %}checked{% endif %} class="mr-2">
+            Is Player
         </label>
 
-         <div class="player-fields">
-            <label for="teamid">Team:</label>
-            <select name="teamid" id="teamid">
+        <div class="player-fields">
+            <label class="block mb-2 text-blue-700 font-semibold">Team:</label>
+            <select name="teamid" id="teamid" class="w-full px-3 py-2 mb-4 border rounded">
                 {% for team in teams %}
-                    <option value="{{ team[0] }}">{{ team[1] }}</option>
+                    <option value="{{ team[0] }}" {% if athlete.teamid == team[0] %}selected{% endif %}>{{ team[1] }}</option>
                 {% endfor %}
             </select>
 
+            <label class="block mb-2 text-blue-700 font-semibold">Jersey Number:</label>
+            <input type="number" name="athletejerseynum" id="athletejerseynum" value="{{ athlete.jersey_number or '' }}" class="w-full px-3 py-2 mb-1 border rounded" />
+            <div id="taken-numbers" class="text-red-600 text-sm mb-4"></div>
 
-            <label for="athletejerseynum">Jersey Number:</label>
-<input type="number" name="athletejerseynum" id="athletejerseynum" value="{{ athlete.jersey_number or '' }}">
-           <div id="taken-numbers" style="color: red; font-size: 0.9em;"></div>
-
-            <label>Position:
-                <select name="athleteposition">
-                    {% for position in positions %}
-                        <option value="{{ position }}" {% if athlete.position == position %}selected{% endif %}>
-                            {{ position }}
-                        </option>
-                    {% endfor %}
-                </select>
-            </label>
+            <label class="block mb-2 text-blue-700 font-semibold">Position:</label>
+            <select name="athleteposition" class="w-full px-3 py-2 mb-4 border rounded">
+                {% for position in positions %}
+                    <option value="{{ position }}" {% if athlete.position == position %}selected{% endif %}>
+                        {{ position }}
+                    </option>
+                {% endfor %}
+            </select>
         </div>
 
-        <button type="submit">Save Changes</button>
-        <a href="/athletes">Back</a>
+        <div class="flex justify-between">
+            <a href="/athletes" class="text-sm text-gray-600 hover:underline">Cancel</a>
+            <button type="submit" class="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded">
+                Save Changes
+            </button>
+        </div>
     </form>
 </body>
 </html>

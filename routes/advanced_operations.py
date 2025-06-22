@@ -116,6 +116,8 @@ def run_query2():
         logger.error(f"Error in query2: {str(e)}", exc_info=True)
         return jsonify({"error": f"שגיאה בביצוע שאילתה 2: {str(e)}"}), 500
 
+from flask import request, jsonify
+
 @advanced_ops_bp.route("/api/function1", methods=["GET"])
 def run_function1():
     try:
@@ -125,18 +127,16 @@ def run_function1():
 
         conn = get_connection()
         cur = conn.cursor()
-        logger.debug(f"Executing function1 with country_id={country_id}")
-        cur.execute("SELECT * FROM get_top_athletes_by_country(%s)", (int(country_id),))
+
+        # קוראים לפונקציה שמחזירה טבלה
+        cur.execute("SELECT * FROM get_top_athletes_by_country(%s);", (int(country_id),))
         rows = cur.fetchall()
-        logger.debug(f"Function1 fetched {len(rows)} rows")
+
         cur.close()
         conn.close()
 
         result = [
-            {
-                "athletename": row[0],
-                "total_medals": row[1]
-            }
+            {"athletename": row[0], "total_medals": row[1]}
             for row in rows
         ]
         return jsonify(result)
@@ -144,6 +144,7 @@ def run_function1():
     except Exception as e:
         logger.error(f"Error in function1: {str(e)}", exc_info=True)
         return jsonify({"error": f"שגיאה בביצוע פונקציה 1: {str(e)}"}), 500
+
 
 @advanced_ops_bp.route("/api/function2", methods=["GET"])
 def run_function2():

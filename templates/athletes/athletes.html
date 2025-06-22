@@ -35,7 +35,7 @@
         <tbody>
             {% for a in athletes %}
             <tr>
-                <td>{{ a.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td>{{ a.name }}</td>
                 <td>{{ a.gender }}</td>
                 <td>{{ a.birthday }}</td>

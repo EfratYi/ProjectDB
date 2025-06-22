@@ -18,7 +18,7 @@
     <table>
         <thead>
             <tr>
-                <th>Sport ID</th>
+                <th>ID</th>
                 <th>Sport Name</th>
                 <th>Category</th>
                 <th>Edit</th>
@@ -28,7 +28,7 @@
         <tbody>
             {% for sport in sports %}
             <tr>
-                <td>{{ sport.id }}</td>
+                <td>{{ loop.index }}</td>
                 <td>{{ sport.name }}</td>
                 <td>{{ sport.category }}</td>
                 <td><a href="/sports/edit/{{ sport.id }}">Edit</a></td>

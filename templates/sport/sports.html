@@ -31,7 +31,7 @@
                 <td>{{ sport.id }}</td>
                 <td>{{ sport.name }}</td>
                 <td>{{ sport.category }}</td>
-                <td><a href="{{ url_for('sports_bp.edit_sport', sport_id=sport.id) }}">Edit</a></td>
+                <td><a href="/sports/edit/{{ sport.id }}">Edit</a></td>
                 <td>
                     <form method="POST" action="{{ url_for('sports_bp.delete_sport', sport_id=sport.id) }}" onsubmit="return confirm('Are you sure you want to delete this sport?');">
                         <button type="submit">Delete</button>

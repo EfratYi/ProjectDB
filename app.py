@@ -14,6 +14,5 @@ app.register_blueprint(advanced_ops_bp)
 @app.route("/")
 def main_menu():
     return render_template("main_menu.html")
-
 if __name__ == "__main__":
     app.run(debug=True)

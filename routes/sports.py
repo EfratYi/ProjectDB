@@ -58,24 +58,53 @@ def add_sport():
 def edit_sport(sport_id):
     if request.method == "POST":
         try:
-            name = request.form["sportname"]
+            sportname = request.form["sportname"]
             category = request.form["category"]
 
             conn = get_connection()
             cur = conn.cursor()
             cur.execute("""
-                UPDATE sport SET sportname = %s, category = %s WHERE sportid = %s
-            """, (name, category, sport_id))
+                UPDATE sport
+                SET sportname = %s,
+                    category = %s
+                WHERE sportid = %s
+            """, (sportname, category, sport_id))
             conn.commit()
             cur.close()
             conn.close()
-
-            return redirect("/sport")
+            return redirect("/sports")
 
         except Exception as e:
-            return render_edit_sport_form(sport_id, str(e))
+            return f"Error updating sport: {e}"
 
-    return render_edit_sport_form(sport_id)
+    else:
+        try:
+            conn = get_connection()
+            cur = conn.cursor()
+
+            # שליפת הספורט עצמו
+            cur.execute("SELECT sportid, sportname, category FROM sport WHERE sportid = %s", (sport_id,))
+            sport = cur.fetchone()
+
+            # שליפת רשימת קטגוריות ייחודיות מהטבלה עצמה
+            cur.execute("SELECT DISTINCT category FROM sport WHERE category IS NOT NULL ORDER BY category")
+            categories = [row[0] for row in cur.fetchall()]
+
+            cur.close()
+            conn.close()
+
+            if sport:
+                sport_dict = {
+                    "sportid": sport[0],
+                    "sportname": sport[1],
+                    "category": sport[2]
+                }
+                return render_template("sport/edit_sport.html", sport=sport_dict, categories=categories)
+            else:
+                return "Sport not found"
+
+        except Exception as e:
+            return f"Error fetching sport: {e}"
 
 
 def render_edit_sport_form(sport_id, error=None):
